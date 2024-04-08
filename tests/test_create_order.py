@@ -11,7 +11,7 @@ class TestCreateOrder:
         user_info = register_new_user_and_return_user_info()
         ingredient_list = get_ingredients()
         payload = {"ingredients": ingredient_list}
-        response = requests.post(f'{Urls.burger_main}/api/orders', headers={'Authorization': user_info.get("token")}, data=payload)
+        response = requests.post(f'{Data.burger_main}{Data.endpoint_order}', headers={'Authorization': user_info.get("token")}, data=payload)
         assert response.status_code == 200 and response.json()["success"] == True
 
     @allure.title('Проверка успешного создания заказа для неавторизованного пользователя')
@@ -21,7 +21,7 @@ class TestCreateOrder:
     def test_create_order_ingredients_and_without_auth(self):
         ingredient_list = get_ingredients()
         payload = {"ingredients": ingredient_list}
-        response = requests.post(f'{Urls.burger_main}/api/orders', data=payload)
+        response = requests.post(f'{Data.burger_main}{Data.endpoint_order}', data=payload)
         assert response.status_code == 200 and response.json()["success"] == True
 
     @allure.title('Проверка ошибки создания заказа для авторизованного пользователя с пустым списком ингредиентов')
@@ -31,8 +31,8 @@ class TestCreateOrder:
     def test_create_order_with_auth_and_without_ingredients(self):
         user_info = register_new_user_and_return_user_info()
         payload = {"ingredients": ""}
-        response = requests.post(f'{Urls.burger_main}/api/orders', headers={'Authorization': user_info.get("token")}, data=payload)
-        assert response.status_code == 400 and response.json()["success"] == False and response.json()['message'] == 'Ingredient ids must be provided'
+        response = requests.post(f'{Data.burger_main}{Data.endpoint_order}', headers={'Authorization': user_info.get("token")}, data=payload)
+        assert response.status_code == 400 and response.json()["success"] == False and response.json()['message'] == Data.answer_order_without_ingredients
 
     @allure.title('Проверка ошибки создания заказа для неавторизованного пользователя с пустым списком ингредиентов')
     @allure.description('В запрос создания заказа не передается токен авторизации пользователя, при этом список '
@@ -40,8 +40,8 @@ class TestCreateOrder:
                         'ошибки')
     def test_create_order_without_auth_and_without_ingredients(self):
         payload = {"ingredients": ""}
-        response = requests.post(f'{Urls.burger_main}/api/orders', data=payload)
-        assert response.status_code == 400 and response.json()["success"] == False and response.json()['message'] == 'Ingredient ids must be provided'
+        response = requests.post(f'{Data.burger_main}{Data.endpoint_order}', data=payload)
+        assert response.status_code == 400 and response.json()["success"] == False and response.json()['message'] == Data.answer_order_without_ingredients
 
     @allure.title('Проверка ошибки создания заказа при наличии некорректного значения в списке ингредиентов')
     @allure.description('Используется метод создания нового пользователя. В запрос создания заказа передается токен '
@@ -50,5 +50,5 @@ class TestCreateOrder:
     def test_create_order_with_incorrect_ingredients(self):
         user_info = register_new_user_and_return_user_info()
         payload = {"ingredients": "11111"}
-        response = requests.post(f'{Urls.burger_main}/api/orders', headers={'Authorization': user_info.get("token")}, data=payload)
-        assert response.status_code == 500 and 'Internal Server Error' in response.text
+        response = requests.post(f'{Data.burger_main}{Data.endpoint_order}', headers={'Authorization': user_info.get("token")}, data=payload)
+        assert response.status_code == 500 and Data.answer_error_server in response.text

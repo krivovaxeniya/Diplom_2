@@ -13,7 +13,7 @@ class TestChangeUserData:
         payload = {"email": user_info.get("email"),
                    "password": "password",
                    "name": user_info.get("name")}
-        response = requests.patch(f'{Urls.burger_main}/api/auth/user',  headers={'Authorization': user_info.get("token")}, data=payload)
+        response = requests.patch(f'{Data.burger_main}{Data.endpoint_change_user_data}',  headers={'Authorization': user_info.get("token")}, data=payload)
         assert response.status_code == 200 and response.json()["success"] == True and response.json()['user']['email'] == payload.get('email')
 
     @allure.title('Проверка успешного изменения email авторизованного пользователя')
@@ -26,7 +26,7 @@ class TestChangeUserData:
         payload = {"email": f'test_change_mail{random.randint(0, 1000)}.ya.ru',
                    "password": user_info.get("password"),
                    "name": user_info.get("name")}
-        response = requests.patch(f'{Urls.burger_main}/api/auth/user',  headers={'Authorization': user_info.get("token")},data=payload)
+        response = requests.patch(f'{Data.burger_main}{Data.endpoint_change_user_data}',  headers={'Authorization': user_info.get("token")},data=payload)
         assert response.status_code == 200 and response.json()["success"] == True and response.json()['user']['email'] == payload.get('email')
 
     @allure.title('Проверка успешного изменения имени авторизованного пользователя')
@@ -39,7 +39,7 @@ class TestChangeUserData:
         payload = {"email": user_info.get("email"),
                    "password": user_info.get("password"),
                    "name": "Ostap"}
-        response = requests.patch(f'{Urls.burger_main}/api/auth/user',  headers={'Authorization': user_info.get("token")},data=payload)
+        response = requests.patch(f'{Data.burger_main}{Data.endpoint_change_user_data}',  headers={'Authorization': user_info.get("token")},data=payload)
         assert response.status_code == 200 and response.json()["success"] == True and response.json()['user']['name'] == payload.get('name')
 
     @allure.title('Проверка ошибки изменения имени для авторизованного пользователя')
@@ -51,5 +51,5 @@ class TestChangeUserData:
         payload = {"email": user_info.get("email"),
                    "password": user_info.get("password"),
                    "name": "Ostap"}
-        response = requests.patch(f'{Urls.burger_main}/api/auth/user', data=payload)
-        assert response.status_code == 401 and response.json()["success"] == False and response.json()['message'] == 'You should be authorised'
+        response = requests.patch(f'{Data.burger_main}{Data.endpoint_change_user_data}', data=payload)
+        assert response.status_code == 401 and response.json()["success"] == False and response.json()['message'] == Data.answer_without_auth

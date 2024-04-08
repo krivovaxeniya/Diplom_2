@@ -13,7 +13,7 @@ class TestLoginUser:
         user_data = register_new_user_and_return_user_info()
         payload = {"email": user_data.get('email'),
                    "password": user_data.get('password')}
-        response = requests.post(f'{Urls.burger_main}/api/auth/login', data=payload)
+        response = requests.post(f'{Data.burger_main}{Data.endpoint_auth}', data=payload)
         assert response.status_code == 200 and response.json()["success"] == True and response.json()['user']['email'] == payload.get('email')
 
     @allure.title('Проверка ошибки авторизации при вводе некорректного email или пароля')
@@ -27,5 +27,5 @@ class TestLoginUser:
     def test_login_with_incorrect_data(self, email, password):
         payload = {"email": email,
                    "password": password}
-        response = requests.post(f'{Urls.burger_main}/api/auth/login', data=payload)
-        assert response.status_code == 401 and response.json()["success"] == False and response.json()['message'] == 'email or password are incorrect'
+        response = requests.post(f'{Data.burger_main}{Data.endpoint_auth}', data=payload)
+        assert response.status_code == 401 and response.json()["success"] == False and response.json()['message'] == Data.answer_incorrect_data

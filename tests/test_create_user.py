@@ -13,7 +13,7 @@ class TestCreateUser:
                    "password": "12345678",
                    "name": "Ivan"
                    }
-        response = requests.post(f'{Urls.burger_main}/api/auth/register', data=payload)
+        response = requests.post(f'{Data.burger_main}{Data.endpoint_register}', data=payload)
         assert response.status_code == 200 and response.json()["success"] == True and response.json()['user']['email'] == payload.get('email')
 
     @allure.title('Проверка возврата ошибки при создании пользователя, который уже зарегистрирован')
@@ -25,8 +25,8 @@ class TestCreateUser:
         payload = {"email": user_data.get('email'),
                    "password": user_data.get('password'),
                    "name": user_data.get('name')}
-        response = requests.post(f'{Urls.burger_main}/api/auth/register', data=payload)
-        assert response.status_code == 403 and response.json()["success"] == False and response.json()['message'] == 'User already exists'
+        response = requests.post(f'{Data.burger_main}{Data.endpoint_register}', data=payload)
+        assert response.status_code == 403 and response.json()["success"] == False and response.json()['message'] == Data.answer_exit_user
 
     @allure.title('Проверка возврата ошибки при создании пользователя в случае, когда не заполнен один обязательный показатель')
     @allure.description('Отправляются запросы на создание пользователя, в каждом из которых не заполнен один из '
@@ -40,6 +40,6 @@ class TestCreateUser:
         payload = {"email": email,
                    "password": password,
                    "name": name}
-        response = requests.post(f'{Urls.burger_main}/api/auth/register', data=payload)
-        assert response.status_code == 403 and response.json()["success"] == False and response.json()['message'] == 'Email, password and name are required fields'
+        response = requests.post(f'{Data.burger_main}{Data.endpoint_register}', data=payload)
+        assert response.status_code == 403 and response.json()["success"] == False and response.json()['message'] == Data.answer_empty_required_filed
 
